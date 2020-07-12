@@ -33,7 +33,7 @@ def getBuildDateString():
 def getUpdateDateString():
 	try:
 		from glob import glob
-		build = [x.split("-")[-2:-1][0][-8:] for x in open(glob("/var/lib/opkg/info/openpli-bootlogo.control")[0], "r") if x.startswith("Version:")][0]
+		build = [x.split("-")[-2:-1][0][-8:] for x in open(glob("/var/lib/opkg/info/oe-alliance-branding.control")[0], "r") if x.startswith("Version:")][0]
 		if build.isdigit():
 			return  "%s-%s-%s" % (build[:4], build[4:6], build[6:])
 	except:
@@ -54,6 +54,14 @@ def getGStreamerVersionString(cpu):
 		return "%s" % gst[1].split("+")[0].replace("\n","")
 	except:
 		return _("Not Required") if cpu.upper().startswith('HI') else _("Not Installed")
+	
+def getFFmpegVersionString():
+	try:
+		from glob import glob
+		ffmpeg = [x.split("Version: ") for x in open(glob("/var/lib/opkg/info/ffmpeg.control")[0], "r") if x.startswith("Version:")][0]
+		return "%s" % ffmpeg[1].split("-")[0].replace("\n","")
+	except:
+		return _("unknown")
 
 def getKernelVersionString():
 	try:
@@ -173,6 +181,33 @@ def GetIPsFromNetworkInterfaces():
 			iface_addr = socket.inet_ntoa(namestr[i+20:i+24])
 			ifaces.append((iface_name, iface_addr))
 	return ifaces
+
+def getBoxUptime():
+	try:
+		time = ''
+		f = open("/proc/uptime", "rb")
+		secs = int(f.readline().split('.')[0])
+		f.close()
+		if secs > 86400:
+			days = secs / 86400
+			secs = secs % 86400
+			time = ngettext("%d day","%d days", days) % days + " "
+		h = secs / 3600
+		m = (secs % 3600) / 60
+		time += ngettext("%d hour", "%d hours", h) % h + " "
+		time += ngettext("%d minute", "%d minutes", m) % m
+		return  "%s" % time
+	except:
+		return '-'
+
+def getIdea():
+		return _("BlackFish")
+
+def getEmail():
+		return _("blackfish.3654@gmail.com")
+	
+def getDonate():
+		return _("Z541154775569")
 
 # For modules that do "from About import about"
 about = sys.modules[__name__]
