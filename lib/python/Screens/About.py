@@ -18,6 +18,8 @@ from enigma import eTimer, eLabel, eConsoleAppContainer, getDesktop, eGetEnigmaD
 from Components.GUIComponent import GUIComponent
 import skin, os
 
+from Tools.Geolocation import geolocation
+
 class About(Screen):
 	def __init__(self, session):
 		Screen.__init__(self, session)
