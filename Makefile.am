@@ -1,21 +1,15 @@
-SUBDIRS = include lib main data po tools
+installdir = $(pkgdatadir)/display/skin_default
 
-ACLOCAL_AMFLAGS = -I m4
+if HAVE_TEXTLCD
+DISPLAYTYPE = text
+else
+DISPLAYTYPE = display
+endif
 
-installdir = $(pkglibdir)/python
-install_PYTHON = \
-	Navigation.py NavigationInstance.py RecordTimer.py ServiceReference.py \
-	keyids.py keymapparser.py mytest.py skin.py timer.py GlobalActions.py \
-	e2reactor.py
+dist_install_DATA = skin_display.xml
 
-pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = enigma2.pc
-
-metadir = $(datadir)/meta
-meta_DATA = index-enigma2.xml
-CLEANFILES = index-enigma2.xml
-
-EXTRA_DIST = lamedb
-
-index-enigma2.xml: $(top_srcdir)/tools/genmetaindex.py $(top_srcdir)/lib/python/Plugins/*/*/meta/plugin_*.xml
-	$(AM_V_GEN)$(PYTHON) $^ > $@
+# Use box-specific XML if it exists, otherwise get the default
+# TEXTSKIN is either "default" or "7segment"
+# TODO: Missing dependency on optional "skin_$(DISPLAYTYPE)_$(BOXTYPE).xml"
+skin_display.xml:
+	cp $(srcdir)/skin_$(DISPLAYTYPE)_$(BOXTYPE).xml $@ 2>/dev/null || cp $(srcdir)/skin_$(DISPLAYTYPE)_$(TEXTSKIN).xml $@
