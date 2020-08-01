@@ -11547,7 +11547,7 @@ msgstr "Пересканировать"
 
 # Geolocation
 msgid "Geolocation"
-msgstr "Геолокация"
+msgstr "Местоположение"
 
 # LCN Scanner
 msgid "LCN Scanner"
