@@ -152,9 +152,7 @@ class Geolocation(Screen):
 		Screen.__init__(self, session)
 		self.setTitle(_("Geolocation"))
 
-		GeolocationText = _("Geolocation information") + "\n"
-
-		GeolocationText += "\n"
+		GeolocationText = "\n"
 
 		try:
 			continent = geolocation.get("continent", None)
