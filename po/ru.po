@@ -11576,5 +11576,141 @@ msgid "Change Root Password"
 msgstr "Установка пароля для пользователя <root>"
 
 # Wireless Access Point
+
+# msgid "Wireless Access Point"
+# msgstr "Беспроводная точка доступа"
+
+msgid "AP Device"
+msgstr "Устройство точки доступа"
+
+msgid "AP Mode"
+msgstr "Режим точки доступа"
+
+msgid "Atheros"
+msgstr "Atheros"
+
+msgid "Beacon (15~65535)"
+msgstr "Beacon (15 ~ 65535)"
+
+msgid "Channel (1~13)"
+msgstr "Канал (1 ~ 13)"
+
+msgid "Configuration your AP is finished"
+msgstr "Настройка вашей точки доступа завершена"
+
+msgid "Current settings (interface : br0)"
+msgstr "Текущие настройки (интерфейс: br0)"
+
+msgid "Enable 128 bit (Input 26 hex keys)"
+msgstr "Включить 128 бит (введите 26 шестнадцатеричных ключей)"
+
+msgid "Enable 64 bit (Input 10 hex keys)"
+msgstr "Включить 64 бит (введите 10 шестнадцатеричных ключей)"
+
+msgid "Encrypt"
+msgstr "Шифровать"
+
+msgid "FRAGM Threshold (256~2346)"
+msgstr "Порог FRAGM (256 ~ 2346)"
+
+msgid "Group Rekey Interval"
+msgstr "Групповой интервал смены ключей"
+
+msgid "Ignore Broadcast SSID"
+msgstr "Игнорировать широковещательный SSID"
+
+msgid "Invalid Fragm Threshold\n"
+msgstr "Недействительный порог фрагмента\n"
+
+msgid "Invalid RTS Threshold\n"
+msgstr "Недействительный порог RTS\n"
+
+msgid "Invalid SSID\n"
+msgstr "Неверный SSID\n"
+
+msgid ""
+"Invalid WEP key\n"
+"\n"
+msgstr ""
+"Неверный ключ WEP\n"
+"\n"
+
+msgid ""
+"Invalid WPA key\n"
+"\n"
+msgstr ""
+"Неверный ключ WPA\n"
+"\n"
+
+msgid "Invalid beacon\n"
+msgstr "Недействительный маяк\n"
+
+msgid "Invalid channel\n"
+msgstr "Неверный канал\n"
+
+msgid "Invalid wpagrouprekey\n"
+msgstr "Неверный групповой ключ WPA\n"
+
+msgid "KEY (8~63 Characters)"
+msgstr "Ключ (8 ~ 63 символов)"
+
+msgid "KeyType"
+msgstr "Тип ключа"
+
+msgid "Method"
+msgstr "Метод"
+
+msgid "NetMask"
+msgstr "Маска подсети"
+
+msgid "Netmask"
+msgstr "Маска подсети"
+
+msgid "Please wait for AP Configuration....\n"
+msgstr "Пожалуйста, дождитесь настройки точки доступа....\n"
+
+msgid "Preamble"
+msgstr "Преамбула"
+
+msgid "RTS Threshold (0~2347)"
+msgstr "Порог RTS (0 ~ 2347)"
+
+msgid "Ralink"
+msgstr "Ralink"
+
+msgid "Realtek"
+msgstr "Realtek"
+
+msgid "SSID (1~32 Characters)"
+msgstr "SSID (1 ~ 32 символа)"
+
+msgid "Setup Mode"
+msgstr "Режим настройки"
+
+msgid "Unknown network adapter"
+msgstr "Неизвестный сетевой адапте"
+
+msgid "Use AP Mode"
+msgstr "Использовать режим точки доступа"
+
 msgid "Using a Wireless module as access point."
-msgstr "Использование беспроводного модуля в качестве точки доступа"
+msgstr "Использование беспроводного модуля в качестве точки доступа."
+
+msgid "WEP Key (HEX)"
+msgstr "WEP ключ (HEX)"
+
+msgid "WLAN adapter"
+msgstr "Адаптер WLAN"
+
+msgid "WLAN adapter."
+msgstr "Адаптер WLAN."
+
+msgid "WPA/WPA2"
+msgstr "WPA/WPA2"
+
+msgid "Zydas"
+msgstr "Zydas"
+
+msgid "not set"
+msgstr "Не задано"
+
