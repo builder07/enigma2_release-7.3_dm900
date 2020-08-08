@@ -11663,9 +11663,6 @@ msgstr "Метод"
 msgid "NetMask"
 msgstr "Маска подсети"
 
-msgid "Netmask"
-msgstr "Маска подсети"
-
 msgid "Please wait for AP Configuration....\n"
 msgstr "Пожалуйста, дождитесь настройки точки доступа....\n"
 
