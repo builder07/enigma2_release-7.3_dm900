@@ -11575,3 +11575,6 @@ msgstr "Перестроить букет LCN сейчас?"
 msgid "Change Root Password"
 msgstr "Установка пароля для пользователя <root>"
 
+# Wireless Access Point
+msgid "Using a Wireless module as access point."
+msgstr "Использование беспроводного модуля в качестве точки доступа"
