@@ -11691,7 +11691,7 @@ msgid "Use AP Mode"
 msgstr "Использовать режим точки доступа"
 
 msgid "Using a Wireless module as access point."
-msgstr "Использование беспроводного модуля в качестве точки доступа."
+msgstr "Использование беспроводного модуля в качестве точки доступа"
 
 msgid "WEP Key (HEX)"
 msgstr "WEP ключ (HEX)"
@@ -11710,4 +11710,19 @@ msgstr "Zydas"
 
 msgid "not set"
 msgstr "Не задано"
+
+# Partners
+msgid "Partners and Sponsors"
+msgstr "Партнёры и Спонсоры"
+
+msgid "Become a member"
+msgstr "Стать участником"
+
+msgid "To the attention of Partners and Sponsors!!! Your information can be posted here. For all questions, please contact by e-mail: blackfish.3654@gmail.com"
+msgstr "Вниманию Партнёров и Спонсоров!!! Ваша информация может быть размещена здесь. По всем вопросам, пожалуйста, обращайтесь по электронной почте: blackfish.3654@gmail.com"
+
+msgid "Public organization"
+msgstr "Общественная организация"
+
+
 
