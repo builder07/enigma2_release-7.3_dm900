@@ -11765,9 +11765,6 @@ msgstr "При загрузке ресивера, дождаться указа�
 msgid "Apply new system time?"
 msgstr "Применить новое системное время?"
 
-msgid "Cancel"
-msgstr "Отмена"
-
 msgid "Change system time in enigma2 box"
 msgstr "Изменение системного времени ресивера"
 
@@ -11848,12 +11845,6 @@ msgstr "Нажмите ОК"
 msgid "Restart GUI"
 msgstr "Рестарт GUI"
 
-msgid "Restart GUI now?"
-msgstr "Выполнить рестарт GUI сейчас?"
-
-msgid "Save"
-msgstr "Сохранить"
-
 msgid "Script 'set-rtctime' not found!"
 msgstr "Скрипт 'set-rtctime' не найден!"
 
@@ -11909,9 +11900,6 @@ msgstr ""
 
 msgid "Time string too short."
 msgstr "Строка времени слишком короткая."
-
-msgid "Transponder"
-msgstr "Транспордер"
 
 msgid "Use RTC time from deep standby"
 msgstr "Использовать время RTC при старте ресивера"
