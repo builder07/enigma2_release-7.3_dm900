@@ -5012,7 +5012,7 @@ msgid "Nameserver setup"
 msgstr "Настройка сервера имен (DNS)"
 
 msgid "Namespace & Orbital pos."
-msgstr "Пространство имен & Орбитальная позиция"
+msgstr "Простр.имен & Орбит.позиция"
 
 msgid "Namibia"
 msgstr "Namibia"
