@@ -5,7 +5,7 @@ from enigma import getBoxType
 from Poll import Poll
 import os
 
-class VtiTempFan(Poll, Converter, object):
+class TempFan(Poll, Converter, object):
     TEMPINFO = 0
     FANINFO = 1
     ALL = 2
