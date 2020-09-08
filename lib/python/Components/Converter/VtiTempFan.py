@@ -97,7 +97,7 @@ class VtiTempFan(Poll, Converter, object):
                 for line in open('/etc/init.d/softcam'):
                     line = line.lower()
                     if 'wicardd' in line:
-                        return 'Wicardd'
+                        return 'WiCard'
                     if 'incubus' in line:
                         return 'Incubus'
                     if 'gbox' in line:
@@ -109,7 +109,7 @@ class VtiTempFan(Poll, Converter, object):
                     if 'oscam-emu' in line:
                         return 'oscam-emu'
                     if 'oscam' in line:
-                        return 'OScam'
+                        return 'OSCam'
                     if 'camd3' in line:
                         if 'mgcamd' not in line:
                             return 'Camd3'
