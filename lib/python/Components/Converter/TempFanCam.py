@@ -1,0 +1,109 @@
+# TempFanCam BF 2020
+
+from Components.Converter.Converter import Converter
+from Components.Sensors import sensors
+from Components.Element import cached
+from enigma import getBoxType
+from Poll import Poll
+from Tools.Directories import fileExists
+import os
+
+class TempFanCam(Poll, Converter, object):
+    TEMPINFO = 0
+    FANINFO = 1
+    CAMNAME = 2
+
+    def __init__(self, type):
+        Poll.__init__(self)
+        Converter.__init__(self, type)
+        self.type = type
+        self.poll_interval = 30000
+        self.poll_enabled = True
+        if type == 'TempInfo':
+            self.type = self.TEMPINFO
+        elif type == 'FanInfo':
+            self.type = self.FANINFO
+        elif type == 'CamName':
+            self.type = self.CAMNAME
+
+    @cached
+    def getText(self):
+        textvalue = ''
+        if self.type == self.TEMPINFO:
+            textvalue = self.tempfile()
+        elif self.type == self.FANINFO:
+            textvalue = self.fanfile()
+        elif self.type == self.CAMNAME:
+            textvalue = self.getCamName()
+        return textvalue
+
+    text = property(getText)
+
+    def tempfile(self):
+        mark = str('\xc2\xb0')
+        temperature = ''
+
+        if os.path.isfile('/proc/hisi/msp/pm_cpu'):
+            try:
+                tempinfo = re.search('temperature = (\d+) degree', open("/proc/hisi/msp/pm_cpu").read()).group(1)
+            except:
+                pass
+        if temperature > 0:
+                tempinfo = 'CPU: ' + '36.6' + mark + 'C'
+        return tempinfo
+
+    def fanfile(self):
+        fan = ''
+        try:
+            f = open('/proc/stb/fp/fan_speed', 'rb')
+            fan = f.readline().strip()
+            f.close()
+            faninfo = 'FAN: ' + str(fan)
+            return faninfo
+        except:
+            pass
+
+    def getCamName(self):
+        if os.path.exists('/etc/init.d/softcam'):
+            try:
+                for line in open('/etc/init.d/softcam'):
+                    line = line.lower()
+                    if 'wicardd' in line:
+                        return 'WiCard'
+                    if 'incubus' in line:
+                        return 'Incubus'
+                    if 'gbox' in line:
+                        return 'Gbox'
+                    if 'mbox' in line:
+                        return 'Mbox'
+                    if 'cccam' in line:
+                        return 'CCcam'
+                    if 'oscam-emu' in line:
+                        return 'oscam-emu'
+                    if 'oscam' in line:
+                        return 'OSCam'
+                    if 'camd3' in line:
+                        if 'mgcamd' not in line:
+                            return 'Camd3'
+                    else:
+                        if 'mgcamd' in line:
+                            return 'Mgcamd'
+                        if 'gcam' in line:
+                            if 'mgcamd' not in line:
+                                return 'GCam'
+                        else:
+                            if 'ncam' in line:
+                                return 'NCam'
+                            if 'common' in line:
+                                return 'CI'
+                            if 'interface' in line:
+                                return 'CI'
+
+            except:
+                pass
+
+        return ''
+
+    def changed(self, what):
+        if what[0] == self.CHANGED_POLL:
+            Converter.changed(self, what)
