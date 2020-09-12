@@ -1,4 +1,4 @@
-# TempFanCam BF 2020
+# TempFanCam.py (c) BlackFish 2020
 
 from Components.Converter.Converter import Converter
 from Components.Sensors import sensors
@@ -17,7 +17,7 @@ class TempFanCam(Poll, Converter, object):
         Poll.__init__(self)
         Converter.__init__(self, type)
         self.type = type
-        self.poll_interval = 30000
+        self.poll_interval = 3000
         self.poll_enabled = True
         if type == 'TempInfo':
             self.type = self.TEMPINFO
@@ -40,17 +40,16 @@ class TempFanCam(Poll, Converter, object):
     text = property(getText)
 
     def tempfile(self):
-        mark = str('\xc2\xb0')
-        temperature = ''
-
-        if os.path.isfile('/proc/hisi/msp/pm_cpu'):
-            try:
-                tempinfo = re.search('temperature = (\d+) degree', open("/proc/hisi/msp/pm_cpu").read()).group(1)
-            except:
-                pass
-        if temperature > 0:
-                tempinfo = 'CPU: ' + '36.6' + mark + 'C'
-        return tempinfo
+        temp = ''
+        try:
+            f = open('/proc/hisi/msp/pm_cpu', 'rb')
+            temp = open ("/proc/hisi/msp/pm_cpu", "r").readlines()[2].strip('Tsensor: temperature = ')[:-9]
+            f.close()
+            mark = str('\xc2\xb0')
+            tempinfo = 'CPU ' + str(temp) + mark + 'C'
+            return tempinfo
+        except:
+            pass
 
     def fanfile(self):
         fan = ''
@@ -58,7 +57,7 @@ class TempFanCam(Poll, Converter, object):
             f = open('/proc/stb/fp/fan_speed', 'rb')
             fan = f.readline().strip()
             f.close()
-            faninfo = 'FAN: ' + str(fan)
+            faninfo = 'FAN ' + str(fan)
             return faninfo
         except:
             pass
