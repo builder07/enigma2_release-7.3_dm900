@@ -23,3 +23,7 @@ dist_pkgdata_DATA = \
 
 iso-639-3.pck: $(srcdir)/iso-639-3.tab
 	python $(srcdir)/convert-iso-639-3.py $< $@
+	
+if HAVE_COLORLCD390
+SUBDIRS += display390
+endif	
