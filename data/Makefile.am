@@ -20,10 +20,11 @@ dist_pkgdata_DATA = \
 	startwizard.xml \
 	timezone.xml \
 	unicable.xml
+	
+if HAVE_COLORLCD390
+SUBDIRS += display390
+endif		
 
 iso-639-3.pck: $(srcdir)/iso-639-3.tab
 	python $(srcdir)/convert-iso-639-3.py $< $@
 	
-if HAVE_COLORLCD390
-SUBDIRS += display390
-endif	
