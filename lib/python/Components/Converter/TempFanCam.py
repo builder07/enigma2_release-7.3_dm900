@@ -41,15 +41,56 @@ class TempFanCam(Poll, Converter, object):
 
     def tempfile(self):
         temp = ''
+        mark = str('\xc2\xb0')
+        sensor_info = None
+        temperature = 0
         try:
             f = open('/proc/hisi/msp/pm_cpu', 'rb')
             temp = open ("/proc/hisi/msp/pm_cpu", "r").readlines()[2].strip('Tsensor: temperature = ')[:-9]
             f.close()
-            mark = str('\xc2\xb0')
             tempinfo = 'CPU ' + str(temp) + mark + 'C'
             return tempinfo
         except:
             pass
+
+        if os.path.exists('/proc/stb/sensors/temp0/value'):
+            f = open('/proc/stb/sensors/temp0/value', 'r')
+            tempinfo = str(f.readline().strip())
+            f.close()
+            if tempinfo and int(tempinfo) > 0:
+                tempinfo = 'CPU ' + str(temp) + mark + 'C'
+                return tempinfo
+        elif os.path.exists('/proc/stb/fp/temp_sensor'):
+            f = open('/proc/stb/fp/temp_sensor', 'r')
+            tempinfo = str(f.readline().strip())
+            f.close()
+            if tempinfo and int(tempinfo) > 0:
+                tempinfo = 'CPU ' + str(temp) + mark + 'C'
+                return tempinfo
+        elif os.path.exists('/proc/stb/sensors/temp/value'):
+            f = open('/proc/stb/sensors/temp/value', 'r')
+            tempinfo = str(f.readline().strip())
+            f.close()
+            if tempinfo and int(tempinfo) > 0:
+                tempinfo = 'CPU ' + str(temp) + mark + 'C'
+                return tempinfo
+        elif os.path.exists('/proc/stb/fp/temp_sensor_avs'):
+            f = open('/proc/stb/fp/temp_sensor_avs', 'r')
+            tempinfo = str(f.readline().strip())
+            f.close()
+            if tempinfo and int(tempinfo) > 0:
+                tempinfo = 'CPU ' + str(temp) + mark + 'C'
+                return tempinfo
+        elif os.path.isfile('/sys/devices/virtual/thermal/thermal_zone0/temp'):
+            try:
+                temperature = int(open('/sys/devices/virtual/thermal/thermal_zone0/temp').read().strip()) / 1000
+            except:
+                pass
+
+            if temperature > 0:
+                tempinfo = 'CPU ' + str(temp) + mark + 'C'
+                return tempinfo
+        return tempinfo
 
     def fanfile(self):
         fan = ''
