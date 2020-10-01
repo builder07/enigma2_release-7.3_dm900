@@ -1,4 +1,4 @@
-SUBDIRS = countries display fonts extensions keymaps skin_default skin_fallback_1080 hw_info
+SUBDIRS = countries display fonts extensions keymaps skin_default skin_fallback_1080 hw_info display390
 
 dist_pkgdata_DATA = \
 	black.mvi \
