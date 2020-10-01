@@ -261,6 +261,7 @@ data/Makefile
 data/fonts/Makefile
 data/countries/Makefile
 data/display/Makefile
+data/display390/Makefile
 data/extensions/Makefile
 data/keymaps/Makefile
 data/hw_info/Makefile
