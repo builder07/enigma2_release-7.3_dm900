@@ -82,6 +82,20 @@ AC_ARG_WITH(7segment,
 	[[TEXTSKIN="default"]]
 )
 AC_SUBST(TEXTSKIN)
+if test x"$with7segment" != xno ; then
+	AC_DEFINE(HAVE_7SEGMENT, 1,[Define when using an ascii based lcd device])
+fi
+AM_CONDITIONAL(HAVE_7SEGMENT, test x"$with7segment" != xno)
+
+AC_ARG_WITH(colorlcd390,
+	AC_HELP_STRING([--with-colorlcd390], [use 390x240 16bpp color display, yes or no]),
+	[[withcolorlcd390=$withval]],
+	[[withcolorlcd390=no]]
+)
+if test x"$withcolorlcd390" != xno ; then
+	AC_DEFINE(HAVE_COLORLCD390, 1,[Define when using a 390x240 color display device])
+fi
+AM_CONDITIONAL(HAVE_COLORLCD390, test x"$withcolorlcd390" != xno)
 
 if test `echo "$BOXTYPE" | cut -b 1-7` == "mbmicro"; then
 	AC_DEFINE(FORCE_NO_BLENDING_ACCELERATION, 1,[define when the framebuffer acceleration does not have alphablending support, though the autodetection might indicate that it does])
@@ -107,6 +121,14 @@ AM_CONDITIONAL(HAVE_LIBSDL, test "$with_libsdl" = "yes")
 if test "$BOXTYPE" == "sf8008" -o "$BOXTYPE" == "sf8008m" -o "$BOXTYPE" == "ustym4kpro" -o "$BOXTYPE" == "viper4k"; then
 	AC_DEFINE(HAVE_HISILICON, 1,[define add HISILICON chip])
 	AC_DEFINE(CONFIG_HISILICON_FB, 1,[define add HISILICON framebuffer blit])
+fi
+
+if test "$BOXTYPE" == "dm7080" -o "$BOXTYPE" == "dm820" -o "$BOXTYPE" == "dm800se" -o "$BOXTYPE" == "dm800sev2" -o "$BOXTYPE" == "dm7020hd" -o "$BOXTYPE" == "dm7020hdv2" -o "$BOXTYPE" == "dm900" -o "$BOXTYPE" == "dm920"; then
+	AC_DEFINE(DREAMBOX_DUAL_TUNER, 1,[define BOXTYPE DM7080])
+fi
+
+if test "$BOXTYPE" == "dm7080" -o "$BOXTYPE" == "dm820"  -o "$BOXTYPE" == "dm900" -o "$BOXTYPE" == "dm920" -o "$BOXTYPE" == "dm520"; then
+	AC_DEFINE(CONFIG_ION, 1,[define BOX use ION Allocator])
 fi
 
 AC_ARG_WITH(libxine,
