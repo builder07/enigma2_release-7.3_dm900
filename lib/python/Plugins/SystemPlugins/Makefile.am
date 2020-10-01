@@ -4,18 +4,10 @@ SUBDIRS = SoftwareManager PositionerSetup Satfinder \
 	SatelliteEquipmentControl Videomode VideoTune Hotplug \
 	DefaultServicesScanner DiseqcTester CommonInterfaceAssignment \
 	CableScan FastScan OSDPositionSetup OSD3DSetup HdmiCEC VideoClippingSetup \
-	VideoEnhancement WirelessLan NetworkWizard LCNScanner
+	VideoEnhancement WirelessLan NetworkWizard LCNScanner FSBLUpdater
 
 if HAVE_TEMPFANCONTROL
 SUBDIRS += TempFanControl
-endif
-
-if DM900
-SUBDIRS += FSBLUpdater
-endif
-
-if DM920
-SUBDIRS += FSBLUpdater
 endif
 
 install_PYTHON =	\
