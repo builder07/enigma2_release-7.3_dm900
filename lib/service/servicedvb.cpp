@@ -2978,7 +2978,7 @@ void eDVBServicePlay::updateDecoder(bool sendSeekableStateChanged)
 			setPCMDelay(pcm_delay == -1 ? 0 : pcm_delay);
 		}
 
-		m_decoder->setVideoPID(vpid, vpidtype);
+		m_current_video_pid_type = vpidtype;
 		m_have_video_pid = (vpid > 0 && vpid < 0x2000);
 
 		if (!m_noaudio)
