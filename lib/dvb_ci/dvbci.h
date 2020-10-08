@@ -1,20 +1,33 @@
 #ifndef __dvbci_dvbci_h
 #define __dvbci_dvbci_h
 
+#if HAVE_HYPERCUBE_DISABLED
+#define trid_ci 1
+#endif
+
 #ifndef SWIG
 
 #include <lib/base/ebase.h>
 #include <lib/service/iservice.h>
-#ifdef __sh__
-#include <lib/base/thread.h>
-#endif
 #include <lib/python/python.h>
 #include <set>
 #include <queue>
 
+#if HAVE_HYPERCUBE_DISABLED
+#include <lib/ciplus/driver_dvbci.h>
+#include <lib/ciplus/inc/trid_datatype.h>
+#include <lib/ciplus/inc/trid_errno.h>
+#include <lib/ciplus/inc/trid_ci_types.h>
+#include <lib/ciplus/inc/trid_ci_api.h>
+#include <lib/dvb_ci/dvbci_ui.h>
+#endif
+
+#include <lib/network/serversocket.h>
+
 class eDVBCISession;
 class eDVBCIApplicationManagerSession;
 class eDVBCICAManagerSession;
+class eDVBCICcSession;
 class eDVBCIMMISession;
 class eDVBServicePMTHandler;
 class eDVBCISlot;
@@ -41,42 +54,6 @@ typedef std::set<providerPair> providerSet;
 typedef std::set<uint16_t> caidSet;
 typedef std::set<eServiceReference> serviceSet;
 
-#ifdef __sh__
-/* ********************************** */
-/* constants taken from dvb-apps 
- */
-#define T_SB                0x80	// sb                           primitive   h<--m
-#define T_RCV               0x81	// receive                      primitive   h-->m
-#define T_CREATE_T_C        0x82	// create transport connection  primitive   h-->m
-#define T_C_T_C_REPLY       0x83	// ctc reply                    primitive   h<--m
-#define T_DELETE_T_C        0x84	// delete tc                    primitive   h<->m
-#define T_D_T_C_REPLY       0x85	// dtc reply                    primitive   h<->m
-#define T_REQUEST_T_C       0x86	// request transport connection primitive   h<--m
-#define T_NEW_T_C           0x87	// new tc / reply to t_request  primitive   h-->m
-#define T_T_C_ERROR         0x77	// error creating tc            primitive   h-->m
-#define T_DATA_LAST         0xA0	// convey data from higher      constructed h<->m
-				 // layers
-#define T_DATA_MORE         0xA1	// convey data from higher      constructed h<->m
-				 // layers
-
-typedef enum {eDataTimeout, eDataError, eDataReady, eDataWrite, eDataStatusChanged} eData;
-
-static inline int time_after(struct timespec oldtime, uint32_t delta_ms)
-{
-	// calculate the oldtime + add on the delta
-	uint64_t oldtime_ms = (oldtime.tv_sec * 1000) + (oldtime.tv_nsec / 1000000);
-	oldtime_ms += delta_ms;
-
-	// calculate the nowtime
-	struct timespec nowtime;
-	clock_gettime(CLOCK_MONOTONIC, &nowtime);
-	uint64_t nowtime_ms = (nowtime.tv_sec * 1000) + (nowtime.tv_nsec / 1000000);
-
-	// check
-	return nowtime_ms > oldtime_ms;
-}
-#endif
-
 class eDVBCISlot: public iObject, public sigc::trackable
 {
 	friend class eDVBCIInterfaces;
@@ -86,9 +63,16 @@ class eDVBCISlot: public iObject, public sigc::trackable
 	ePtr<eSocketNotifier> notifier;
 	int state;
 	std::map<uint16_t, uint8_t> running_services;
+#if HAVE_HYPERCUBE_DISABLED
+	int application_manager;
+	int ca_manager;
+	int mmi_session;
+#else
 	eDVBCIApplicationManagerSession *application_manager;
 	eDVBCICAManagerSession *ca_manager;
+	eDVBCICcSession *cc_manager;
 	eDVBCIMMISession *mmi_session;
+#endif
 	std::priority_queue<queueData> sendqueue;
 	caidSet possible_caids;
 	serviceSet possible_services;
@@ -98,31 +82,41 @@ class eDVBCISlot: public iObject, public sigc::trackable
 	std::string current_source;
 	int current_tuner;
 	bool user_mapped;
+#ifndef HAVE_HYPERCUBE_DISABLED
 	void data(int);
-	bool plugged;
-#ifdef __sh__
-	//dagobert
-	char connection_id;
-	bool mmi_active;
-	int receivedLen;
-	unsigned char* receivedData;
 #endif
+	bool plugged;
 public:
+#if HAVE_HYPERCUBE_DISABLED
+	void eDVBCISlot::data(int/*Trid_CI_CardStatus_t*/ status);
+	void eDVBCISlot::cdata(int/*Trid_CI_CardStatus_t*/ status);
+#endif
 	enum {stateRemoved, stateInserted, stateInvalid, stateResetted};
+	enum {versionUnknown=-1, versionCI=0, versionCIPlus1=1, versionCIPlus2=2};
 	eDVBCISlot(eMainloop *context, int nr);
 	~eDVBCISlot();
 
 	int send(const unsigned char *data, size_t len);
-
+#if HAVE_HYPERCUBE_DISABLED
+	void setAppManager(int session );
+	void setMMIManager(int session );
+	void setCAManager(int session );
+	int getAppManager() { return application_manager; }
+	int getMMIManager() { return mmi_session; }
+	int getCAManager() { return ca_manager; }
+#else
 	void setAppManager( eDVBCIApplicationManagerSession *session );
 	void setMMIManager( eDVBCIMMISession *session );
 	void setCAManager( eDVBCICAManagerSession *session );
+	void setCCManager( eDVBCICcSession *session );
 
 	eDVBCIApplicationManagerSession *getAppManager() { return application_manager; }
 	eDVBCIMMISession *getMMIManager() { return mmi_session; }
 	eDVBCICAManagerSession *getCAManager() { return ca_manager; }
-
+	eDVBCICcSession *getCCManager() { return cc_manager; }
+#endif
 	int getState() { return state; }
+	int getVersion();
 	int getSlotID();
 	int reset();
 	int startMMI();
@@ -137,16 +131,14 @@ public:
 	int setSource(const std::string &source);
 	int setClockRate(int);
 	static std::string getTunerLetter(int tuner_no) { return std::string(1, char(65 + tuner_no)); }
-#ifdef __sh__
-	bool checkQueueSize();
-	void thread();
-	void mmiOpened() { mmi_active = true; };
-	void mmiClosed() { mmi_active = false; };
-	void process_tpdu(unsigned char tpdu_tag, __u8* data, int asn_data_length, int con_id);
-	bool sendCreateTC();
-	eData sendData(unsigned char* data, int len);
-	struct timeval tx_time;
-	struct timespec last_poll_time;
+	static std::string getTunerLetterDM(int);
+	static char* readInputCI(int);
+#if HAVE_HYPERCUBE_DISABLED
+	trid_sint32 MenuDataNotifyCallbackProcess(Trid_T_Menu* menu);
+	trid_sint32 ListDataNotifyCallbackProcess(Trid_T_List* list);
+	trid_sint32 EnqDataNotifyCallbackProcess(Trid_T_Enq* enq);
+	trid_sint32 CloseMMINotifyCallbackProcess();
+	trid_sint32 GetHostAVPIDCallback(trid_uint16 *AudioPID, trid_uint16 *VideoPID);
 #endif
 };
 
@@ -170,7 +162,55 @@ typedef std::list<CIPmtHandler> PMTHandlerList;
 
 #endif // SWIG
 
+#ifndef SWIG
+class eCIClient : public eUnixDomainSocket
+{
+	struct ciplus_header
+	{
+		unsigned int magic;
+		unsigned int cmd;
+		unsigned int size;
+	}__attribute__((packed));
+
+	struct ciplus_message
+	{
+		unsigned int slot;
+		unsigned long idtag;
+		unsigned char tag[4];
+		unsigned int session;
+		unsigned int size;
+	}__attribute__((packed));
+
+	unsigned int receivedLength;
+	unsigned int receivedCmd;
+	unsigned int receivedCmdSize;
+	unsigned char *receivedData;
+
+	ciplus_header header;
+protected:
+	eDVBCIInterfaces *parent;
+	void connectionLost();
+	void dataAvailable();
+public:
+	eCIClient(eDVBCIInterfaces *handler, int socket);
+	void sendData(int cmd, int slot, int session, unsigned long idtag, unsigned char *tag, unsigned char *data, int len);
+
+	enum
+	{
+		CIPLUSHELPER_SESSION_CREATE = 1000,
+		CIPLUSHELPER_SESSION_CLOSE = 1001,
+		CIPLUSHELPER_RECV_APDU = 1002,
+		CIPLUSHELPER_DOACTION = 1003,
+		CIPLUSHELPER_STATE_CHANGED = 1004,
+		CIPLUSHELPER_DATA = 1005,
+		CIPLUSHELPER_MAGIC = 987654321,
+	};
+};
+
+class eDVBCIInterfaces: public eServerSocket
+#else
 class eDVBCIInterfaces
+#endif
 {
 private:
 	typedef enum
@@ -189,17 +229,22 @@ private:
 	} stream_finish_mode_t;
 
 	DECLARE_REF(eDVBCIInterfaces);
+
 	stream_interface_t m_stream_interface;
 	stream_finish_mode_t m_stream_finish_mode;
+
 	static eDVBCIInterfaces *instance;
 	eSmartPtrList<eDVBCISlot> m_slots;
-	eDVBCISlot *getSlot(int slotid);
-	PMTHandlerList m_pmt_handlers;
+	PMTHandlerList m_pmt_handlers; 
+
+	eCIClient *client;
 #ifndef SWIG
 public:
 #endif
 	eDVBCIInterfaces();
 	~eDVBCIInterfaces();
+
+	eDVBCISlot *getSlot(int slotid);
 
 	void addPMTHandler(eDVBServicePMTHandler *pmthandler);
 	void removePMTHandler(eDVBServicePMTHandler *pmthandler);
@@ -219,6 +264,10 @@ public:
 	int sendCAPMT(int slot);
 	int setInputSource(int tunerno, const std::string &source);
 	int setCIClockRate(int slot, int rate);
+
+	void newConnection(int socket);
+	void connectionLost();
+
 #ifdef SWIG
 public:
 #endif
@@ -227,6 +276,21 @@ public:
 	PyObject *getDescrambleRules(int slotid);
 	RESULT setDescrambleRules(int slotid, SWIG_PYOBJECT(ePyObject) );
 	PyObject *readCICaIds(int slotid);
+#if HAVE_HYPERCUBE_DISABLED
+	int CardStatusChangeNotifyCallback(int slotid, Trid_CI_CardStatus_t status);
+	trid_sint32 MenuDataNotifyCallback(Trid_T_Menu* menu);
+	trid_sint32 ListDataNotifyCallback(Trid_T_List* list);
+	trid_sint32 EnqDataNotifyCallback(Trid_T_Enq* enq);
+	trid_sint32 CloseMMINotifyCallback();
+	trid_sint32 GetHostAVPIDCallback(trid_uint16 *AudioPID, trid_uint16 *VideoPID);
+#endif
+	void sendDataToHelper(int cmd, int slot, int session, unsigned long idtag, unsigned char *tag, unsigned char *data, int len);
+	bool isClientConnected();
 };
+#if HAVE_HYPERCUBE_DISABLED
+extern "C" {
 
+int DVBCI_GetCbStatus();
+}
+#endif
 #endif
